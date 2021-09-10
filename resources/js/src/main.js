@@ -3,23 +3,17 @@
  window.Vue = Vue;
 
  import App from './App.vue';
- import VueRouter from 'vue-router';
- import { routes } from './routes';
- import './plugins';
+ import store from './store';
  import vuetify from './plugins/vuetify';
+ import router from './router';
+ import './plugins';
 
-
-
- Vue.use(VueRouter);
-
- const router = new VueRouter({
-     mode: 'history',
-     routes: routes
- });
+ Vue.config.productionTip = false;
 
  const app = new Vue({
      el: '#app',
-     router: router,
+     router,
+     store,
      vuetify,
      render: h => h(App),
  });

@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Contact;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class ContactFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = Contact::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +21,10 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $type = rand(1,2);
         return [
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName()
+            'type' => $type,
+            'contact' => $type === 1 ? $this->faker->phoneNumber() : $this->faker->email()
         ];
     }
 
@@ -32,7 +32,7 @@ class UserFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'unique_name' => 'suspended'
+                'user_id' => 'suspended'
             ];
         });
     }

@@ -1,4 +1,14 @@
 import Vue from 'vue'
-import VueAxios from 'vue-axios';
 import axios from 'axios';
-Vue.use(VueAxios, axios);
+
+const URL_BASE = 'http://localhost:8084/api/'
+const instance = axios.create({
+    baseURL: URL_BASE,
+    headers: {
+        common: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+    },
+});
+
+Vue.prototype.$api = instance;

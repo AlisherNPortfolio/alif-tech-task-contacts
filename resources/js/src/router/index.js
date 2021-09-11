@@ -14,8 +14,25 @@ const routes = [
 			{
 				path: 'contacts',
 				name: 'Contacts',
-				component: () => import('./../views/Contacts.vue'),
-			},
+				component: () => import('./../views/contacts'),
+                children: [
+                    {
+                        path: '',
+                        name: 'contact-index',
+                        component: () => import('./../views/contacts/Contacts')
+                    },
+                    {
+                        path: 'create',
+                        name: 'contact-create',
+                        component: () => import('./../views/contacts/AddEditContact')
+                    },
+                    {
+                        path: ':id',
+                        name: 'contact-update',
+                        component: () => import('./../views/contacts/AddEditContact')
+                    }
+                ]
+			}
 		],
 	}
 ];

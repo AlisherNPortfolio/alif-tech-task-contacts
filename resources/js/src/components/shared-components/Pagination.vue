@@ -157,4 +157,9 @@ li.page-item:last-child {
 	display: flex;
 	margin-right: 0;
 }
+
+.pagination li.next-item img,
+.pagination li:last-child img {
+	transform: rotate(180deg);
+}
 </style>

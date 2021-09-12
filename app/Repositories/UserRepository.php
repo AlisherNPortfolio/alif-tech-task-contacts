@@ -10,6 +10,8 @@ use Illuminate\Support\Collection;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
+    private User $user;
+
     public function __construct(User $user)
     {
         parent::__construct($user);
@@ -26,17 +28,45 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->with(['contacts'])->paginate(10, '*', 'page', $request['page']);
     }
 
-    public function saveContacts(User $user, array $contactsArray)
+    public function saveContacts(User $user, array $userData)
+    {
+        $this->user = $user;
+        $this->deleteRemovedContacts($userData);
+
+        $this->user->contacts()->updateOrCreate(
+            $this->normalizeContactsArray($userData),
+            ['user_id', 'type', 'contact']
+        );
+    }
+
+    private function normalizeContactsArray($userData)
     {
         $contactsBag = [];
-        foreach ($contactsArray as $contactItem) {
-            $contactItem['type'] = $contactItem['type'] === 'phone' ?
-                ContactRepository::TYPE_PHONE :
-                ContactRepository::TYPE_EMAIL;
 
-            array_push($contactsBag, new Contact($contactItem));
+        foreach ($userData['contacts'] as $contactItem) {
+            $contactItem['user_id'] = $this->user->id;
+
+            array_push($contactsBag, $contactItem);
         }
 
-        $user->contacts()->saveMany($contactsBag);
+        return $contactsBag;
+    }
+
+    private function getContactType($contactType)
+    {
+        return $contactType === 'phone' ?
+            ContactRepository::TYPE_PHONE :
+            ContactRepository::TYPE_EMAIL;
+    }
+
+    private function deleteRemovedContacts($userData)
+    {
+        if (isset($userData['id'])) {
+            $contacts = collect($userData['contacts']);
+
+            $this->user->contacts()
+                ->whereNotIn('id', $contacts->pluck('id'))
+                ->delete();
+        }
     }
 }

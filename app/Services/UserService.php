@@ -31,7 +31,7 @@ class UserService extends BaseService
         DB::beginTransaction();
         try {
             $user = $this->userRepository->create($data);
-            $this->userRepository->saveContacts($user, $data['contacts']);
+            $this->userRepository->saveContacts($user, $data);
 
             DB::commit();
 
@@ -61,7 +61,7 @@ class UserService extends BaseService
         try {
             $user = $this->userRepository->find($id);
             $user->update($data);
-            $this->userRepository->saveContacts($user, $data['contacts']);
+            $this->userRepository->saveContacts($user, $data);
 
             DB::commit();
 

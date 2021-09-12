@@ -37,12 +37,12 @@
                 <v-col cols="12" md="3">
                     <v-row>
                         <v-col>
-                            <v-btn block @click="addContact('phone')">
+                            <v-btn block @click="addContact('PHONE')">
                                 + Add phone
                             </v-btn>
                         </v-col>
                     </v-row>
-                    <v-row v-for="(ph, idx) in phone" :key="idx">
+                    <v-row v-for="(ph, idx) in PHONE" :key="idx">
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="ph.contact"
@@ -57,7 +57,7 @@
                                 fab
                                 small
                                 dark
-                                @click="removeContact('phone', ph)"
+                                @click="removeContact('PHONE', ph)"
                                 >
                                 <v-icon>mdi-minus</v-icon>
                             </v-btn>
@@ -68,12 +68,12 @@
                 <v-col cols="12" md="3">
                     <v-row>
                         <v-col>
-                            <v-btn block @click="addContact('email')">
+                            <v-btn block @click="addContact('EMAIL')">
                                 + Add email
                             </v-btn>
                         </v-col>
                     </v-row>
-                     <v-row v-for="(em, idx) in email" :key="idx">
+                     <v-row v-for="(em, idx) in EMAIL" :key="idx">
                         <v-col cols="12" md="6">
                             <v-text-field
                                 v-model="em.contact"
@@ -88,7 +88,7 @@
                                 fab
                                 small
                                 dark
-                                @click="removeContact('email', em)"
+                                @click="removeContact('EMAIL', em)"
                                 >
                                 <v-icon>mdi-minus</v-icon>
                             </v-btn>
@@ -135,8 +135,8 @@ export default {
                 unique_name: null,
                 contacts: [],
             },
-            phone: [],
-            email: [],
+            PHONE: [],
+            EMAIL: [],
             users: [],
             nameRules: [
                 v => !!v || 'Name is required',
@@ -173,8 +173,8 @@ export default {
                 .then(response => {
                     this.users = [response.data];
                     this.contactForm = this.usersData[0];
-                    this.phone = this.contactForm.phones;
-                    this.email = this.contactForm.emails;
+                    this.PHONE = this.contactForm.phones;
+                    this.EMAIL = this.contactForm.emails;
                 }, error => console.log(error))
             }
         },
@@ -191,7 +191,7 @@ export default {
             }
         },
         send() {
-            this.contactForm.contacts = [...this.phone, ...this.email];
+            this.contactForm.contacts = [...this.PHONE, ...this.EMAIL];
             this.removeDuplicateContacts();
 
             if (!this.isEdit) {

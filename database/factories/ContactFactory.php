@@ -21,10 +21,12 @@ class ContactFactory extends Factory
      */
     public function definition()
     {
-        $type = rand(1,2);
+        $arrayTypes = ['PHONE', 'EMAIL'];
+
+        $typeIndex = array_rand($arrayTypes, 1);
         return [
-            'type' => $type,
-            'contact' => $type === 1 ? $this->faker->phoneNumber() : $this->faker->email()
+            'type' => $arrayTypes[$typeIndex],
+            'contact' => $arrayTypes[$typeIndex] === 'PHONE' ? $this->faker->phoneNumber() : $this->faker->email()
         ];
     }
 

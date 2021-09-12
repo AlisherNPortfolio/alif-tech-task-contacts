@@ -16,7 +16,7 @@ class CreateContactsTable extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->enum('type', [1, 2]);
+            $table->enum('type', ['PHONE', 'EMAIL']);
             $table->string('contact');
 
             $table->foreign('user_id')->references('id')->on('users');

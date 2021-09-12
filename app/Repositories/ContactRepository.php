@@ -9,8 +9,8 @@ use Illuminate\Support\Collection;
 
 class ContactRepository extends BaseRepository implements ContactRepositoryInterface
 {
-    public const TYPE_PHONE = "1";
-    public const TYPE_EMAIL = "2";
+    public const TYPE_PHONE = "PHONE";
+    public const TYPE_EMAIL = "EMAIL";
 
     public function __construct(Contact $contact)
     {

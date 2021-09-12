@@ -17,4 +17,9 @@ class UserService
     {
         return $this->userRepository->withPagination();
     }
+
+    public function getUser($id)
+    {
+        return $this->userRepository->find($id);
+    }
 }

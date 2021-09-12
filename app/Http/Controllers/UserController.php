@@ -45,7 +45,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return $this->service->getUser($id);
     }
 
     /**

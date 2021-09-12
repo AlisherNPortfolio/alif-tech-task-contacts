@@ -21,7 +21,7 @@
             <v-col>
                 <v-data-table
                     :headers="headers"
-                    :items="usersList"
+                    :items="usersData"
                     :hide-default-footer="true"
                     sort-by="calories"
                     class="elevation-1"
@@ -70,7 +70,7 @@
                         <v-icon
                             small
                             class="mr-2"
-                            @click="edit(item)">
+                            @click="edit(item.id)">
                                 mdi-pencil
                         </v-icon>
                         <v-icon
@@ -92,6 +92,7 @@
 </template>
 <script>
 import Pagination from './../../components/shared-components/Pagination';
+import {user} from './../../mixins/user';
 
 export default {
     name: 'Contacts',
@@ -103,6 +104,7 @@ export default {
             headers: [
                 { text: 'First name', value: 'first_name' },
                 { text: 'Last name', value: 'last_name' },
+                { text: 'User name', value: 'unique_name' },
                 { text: 'Phones', value: 'phones' },
                 { text: 'Emails', value: 'emails' },
                 { text: 'Action', value: 'action'}
@@ -115,6 +117,7 @@ export default {
     created() {
         this.load();
     },
+    mixins: [user],
     methods: {
         load() {
             this.$api.get('user', {params: this.query})
@@ -126,8 +129,8 @@ export default {
 
             }, error => console.log(error))
         },
-        edit(item) {
-            console.log(this.usersList)
+        edit(id) {
+            this.$router.push({name: 'contact-update', params: {id: id}});
         },
         remove(item) {
 
@@ -135,17 +138,6 @@ export default {
         pagination(page) {
             this.query.page = page;
             this.load();
-        }
-    },
-    computed: {
-        usersList() {
-            return this.users.map(item => {
-                            item['phones'] = item.contacts.filter(contact => contact.type === "1");
-                            item['emails'] = item.contacts.filter(contact => contact.type === "2");
-                            delete item.contacts;
-
-                            return item;
-                        });
         }
     }
 }

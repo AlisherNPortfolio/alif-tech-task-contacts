@@ -11,10 +11,13 @@
             </nav>
             <router-view></router-view>
         </v-main>
+        <notification />
     </v-app>
 </template>
 <script>
+import Notification from './../shared-components/Notification';
 export default {
-    name: 'Home'
+    name: 'Home',
+    components: {Notification}
 }
 </script>

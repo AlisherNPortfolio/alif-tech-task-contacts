@@ -26,7 +26,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->with(['contacts'])->paginate(10, '*', 'page', $request['page']);
     }
 
-    public function createContacts(User $user, array $contactsArray)
+    public function saveContacts(User $user, array $contactsArray)
     {
         $contactsBag = [];
         foreach ($contactsArray as $contactItem) {

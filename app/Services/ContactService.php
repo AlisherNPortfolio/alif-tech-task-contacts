@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Repositories\ContactRepository;
 
-class ContactService
+class ContactService extends BaseService
 {
     protected $contactService;
 

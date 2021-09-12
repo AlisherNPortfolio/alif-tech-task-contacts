@@ -7,7 +7,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use PDOException;
 
-class UserService
+class UserService extends BaseService
 {
     protected $userRepository;
 
@@ -31,21 +31,19 @@ class UserService
         DB::beginTransaction();
         try {
             $user = $this->userRepository->create($data);
-            $this->userRepository->createContacts($user, $data['contacts']);
+            $this->userRepository->saveContacts($user, $data['contacts']);
 
             DB::commit();
-            return response()->json([
-                'success' => true,
-                'data' => $user
-            ]);
+
+            return $this->successResponse($user);
         } catch (PDOException $e) {
             DB::rollback();
-            return response()->json([
-                'success' => false,
-                'code' => ErrorMessages::CAN_NOT_CREATE,
-                'message' => ErrorMessages::CAN_NOT_CREATE_MSG,
-                'details' => $e->getMessage()
-            ]);
+
+            return $this->errorResponse(
+                ErrorMessages::CAN_NOT_CREATE_MSG,
+                ErrorMessages::CAN_NOT_CREATE,
+                $e->getMessage()
+            );
         }
     }
 
@@ -55,5 +53,27 @@ class UserService
 
         $user->contacts()->delete();
         $user->delete();
+    }
+
+    public function updateUser(array $data, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $user = $this->userRepository->find($id);
+            $user->update($data);
+            $this->userRepository->saveContacts($user, $data['contacts']);
+
+            DB::commit();
+
+            return $this->successResponse($user);
+        } catch (PDOException $e) {
+            DB::rollback();
+
+            return $this->errorResponse(
+                ErrorMessages::CAN_NOT_UPDATE_MSG,
+                ErrorMessages::CAN_NOT_UPDATE,
+                $e->getMessage()
+            );
+        }
     }
 }

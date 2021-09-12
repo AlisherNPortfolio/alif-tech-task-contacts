@@ -12,4 +12,7 @@ class ErrorMessages
 
     public const CAN_NOT_CREATE = 1001;
     public const CAN_NOT_CREATE_MSG = 'Resource could not be created!';
+
+    public const CAN_NOT_UPDATE = 1002;
+    public const CAN_NOT_UPDATE_MSG = 'Resource could not be updated!';
 }

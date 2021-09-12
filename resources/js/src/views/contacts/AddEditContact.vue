@@ -206,23 +206,23 @@ export default {
                 const res = response.data;
                 if (res.success) {
                     this.$notify({type: 'success', title: 'Contact added successfully!'});
+                    this.backHome();
                 } else {
                     this.$notify({type: 'error', title: res.message, text: `Code: ${res.code} <br/> Details: ${res.details}`})
                 }
-                this.backHome();
 
             }, error => console.log(error))
         },
         update() {
-            this.$api.put('user', {options: this.contactForm, id: this.id})
+            this.$api.put(`user/${this.id}`, this.contactForm)
             .then(response => {
                 const res = response.data;
                 if (res.success) {
-                    this.$notify({type: 'success', title: 'Contact updated successfully!'})
+                    this.$notify({type: 'success', title: 'Contact updated successfully!'});
+                    this.backHome();
                 } else {
                     this.$notify({type: 'error', title: res.message, text: `Code: ${res.code} <br/> Details: ${res.details}`})
                 }
-                this.backHome();
 
             }, error => console.log(error))
         },

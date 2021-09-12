@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Contact;
 use App\Models\User;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\BaseContracts\UserRepositoryInterface;
@@ -23,5 +24,19 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         $request = request()->all();
         return $this->model->with(['contacts'])->paginate(10, '*', 'page', $request['page']);
+    }
+
+    public function createContacts(User $user, array $contactsArray)
+    {
+        $contactsBag = [];
+        foreach ($contactsArray as $contactItem) {
+            $contactItem['type'] = $contactItem['type'] === 'phone' ?
+                ContactRepository::TYPE_PHONE :
+                ContactRepository::TYPE_EMAIL;
+
+            array_push($contactsBag, new Contact($contactItem));
+        }
+
+        $user->contacts()->saveMany($contactsBag);
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\ErrorMessages;
+use App\Http\Requests\UserRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use PDOException;
 
 class UserController extends Controller
 {
@@ -43,9 +46,12 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        dd($request->all());
+        $request->validated();
+
+        return $this->service
+            ->saveUser($request->all());
     }
 
     /**
@@ -90,6 +96,15 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $this->service->deleteUser($id);
+        } catch (PDOException $e) {
+            return response()->json([
+                'success' => false,
+                'code' => ErrorMessages::CAN_NOT_DELETE,
+                'message' => ErrorMessages::CAN_NOT_DELETE_MSG,
+                'details' => $e->getMessage()
+            ]);
+        }
     }
 }

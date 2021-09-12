@@ -21,7 +21,7 @@ class BaseRepository implements RepositoryInterface
 
     public function find($id): ?Model
     {
-        return $this->model->find($id);
+        return $this->model->with(['contacts'])->find($id);
     }
 
     public function update(array $attributes, array $updateParam): bool

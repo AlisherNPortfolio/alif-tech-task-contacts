@@ -21,7 +21,8 @@
             <v-col>
                 <v-data-table
                     :headers="headers"
-                    :items="contacts"
+                    :items="usersList"
+                    :hide-default-footer="true"
                     sort-by="calories"
                     class="elevation-1"
                     >
@@ -79,16 +80,26 @@
                         </v-icon>
                     </template>
                 </v-data-table>
+                <pagination
+                    :total="this.total"
+                    :perPage="10"
+                    @paginate="pagination($event)">
+                </pagination>
             </v-col>
         </v-row>
     </v-container>
 
 </template>
 <script>
+import Pagination from './../../components/shared-components/Pagination';
+
 export default {
     name: 'Contacts',
     data() {
         return {
+            query: {
+                page: 1
+            },
             headers: [
                 { text: 'First name', value: 'first_name' },
                 { text: 'Last name', value: 'last_name' },
@@ -96,77 +107,45 @@ export default {
                 { text: 'Emails', value: 'emails' },
                 { text: 'Action', value: 'action'}
             ],
-            contacts: []
+            users: [],
+            total: 0
         }
     },
+    components: {Pagination},
     created() {
         this.load();
     },
     methods: {
         load() {
-            const contacts = [
-                {
-                    id: 1,
-                    first_name: 'Alisher',
-                    last_name: 'Nasrullayev',
-                    phones: [
-                        {
-                            id: 1,
-                            user_id: 1,
-                            type: 1,
-                            contact: '998909289445'
-                        },
-                        {
-                            id: 2,
-                            type: 1,
-                            user_id: 2,
-                            contact: '998945546535'
-                        }
-                    ],
-                    emails: [
-                        {
-                            id: 3,
-                            user_id: 1,
-                            type: 2,
-                            contact: 'myemail9445@inbox.ru'
-                        },
-                        {
-                            id: 4,
-                            user_id: 1,
-                            type: 2,
-                            contact: 'ali1289445@gmail.com'
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    first_name: 'Barnogul',
-                    last_name: 'Hamidova',
-                    phones: [
-                        {
-                            id: 5,
-                            user_id: 2,
-                            type: 1,
-                            contact: '998912518065'
-                        }
-                    ],
-                    emails: [
-                        {
-                            id: 6,
-                            user_id: 2,
-                            type: 2,
-                            contact: 'test@mail.uz'
-                        }
-                    ]
-                }
-            ];
-            this.contacts = contacts;
+            this.$api.get('user', {params: this.query})
+            .then(response => {
+                const data = response.data.users;
+
+                this.users = data.data;
+                this.total = data.total;
+
+            }, error => console.log(error))
         },
         edit(item) {
-
+            console.log(this.usersList)
         },
         remove(item) {
 
+        },
+        pagination(page) {
+            this.query.page = page;
+            this.load();
+        }
+    },
+    computed: {
+        usersList() {
+            return this.users.map(item => {
+                            item['phones'] = item.contacts.filter(contact => contact.type === "1");
+                            item['emails'] = item.contacts.filter(contact => contact.type === "2");
+                            delete item.contacts;
+
+                            return item;
+                        });
         }
     }
 }

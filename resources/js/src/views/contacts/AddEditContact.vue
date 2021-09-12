@@ -28,7 +28,7 @@
                         v-model="contactForm.unique_name"
                         :counter="15"
                         :rules="nameRules"
-                        label="Last name"
+                        label="User name"
                         required
                         ></v-text-field>
                 </v-col>
@@ -103,7 +103,7 @@
                             <v-btn
                                 depressed
                                 color="secondary"
-                                @click="$router.go(-1)"
+                                @click="backHome()"
                                 >
                                 Back
                             </v-btn>
@@ -203,13 +203,27 @@ export default {
         add() {
             this.$api.post('user', this.contactForm)
             .then(response => {
-                console.log(response);
+                const res = response.data;
+                if (res.success) {
+                    this.$notify({type: 'success', title: 'Contact added successfully!'});
+                } else {
+                    this.$notify({type: 'error', title: res.message, text: `Code: ${res.code} <br/> Details: ${res.details}`})
+                }
+                this.backHome();
+
             }, error => console.log(error))
         },
         update() {
             this.$api.put('user', {options: this.contactForm, id: this.id})
             .then(response => {
-                console.log(response);
+                const res = response.data;
+                if (res.success) {
+                    this.$notify({type: 'success', title: 'Contact updated successfully!'})
+                } else {
+                    this.$notify({type: 'error', title: res.message, text: `Code: ${res.code} <br/> Details: ${res.details}`})
+                }
+                this.backHome();
+
             }, error => console.log(error))
         },
         removeDuplicateContacts() {
@@ -218,6 +232,9 @@ export default {
                             this.contactForm.contacts
                         )
                     )
+        },
+        backHome() {
+            this.$router.go(-1);
         }
     },
 }

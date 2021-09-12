@@ -75,7 +75,7 @@
                         </v-icon>
                         <v-icon
                             small
-                            @click="remove(item)">
+                            @click="remove(item.id)">
                                 mdi-delete
                         </v-icon>
                     </template>
@@ -132,8 +132,13 @@ export default {
         edit(id) {
             this.$router.push({name: 'contact-update', params: {id: id}});
         },
-        remove(item) {
-
+        remove(id) {
+            this.$api.delete(`user/${id}`)
+            .then(response => {
+                console.log(response)
+                this.$notify({type: 'success', text: 'Deleted successfully!'})
+                this.load();
+            }, error => console.log(error))
         },
         pagination(page) {
             this.query.page = page;

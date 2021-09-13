@@ -30,8 +30,7 @@ class UserService extends BaseService
     {
         DB::beginTransaction();
         try {
-            $user = $this->userRepository->create($data);
-            $this->userRepository->saveContacts($user, $data);
+            $user = $this->userRepository->createUser($data);
 
             DB::commit();
 
@@ -51,6 +50,10 @@ class UserService extends BaseService
     {
         $user = $this->userRepository->find($id);
 
+        if (!$user) {
+            abort(404, 'User not found!');
+        }
+
         $user->contacts()->delete();
         $user->delete();
     }
@@ -59,13 +62,11 @@ class UserService extends BaseService
     {
         DB::beginTransaction();
         try {
-            $user = $this->userRepository->find($id);
-            $user->update($data);
-            $this->userRepository->saveContacts($user, $data);
+            $this->userRepository->updateUser($data, $id);
 
             DB::commit();
 
-            return $this->successResponse($user);
+            return $this->successResponse('success');
         } catch (PDOException $e) {
             DB::rollback();
 

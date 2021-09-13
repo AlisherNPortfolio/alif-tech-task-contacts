@@ -10,7 +10,7 @@ interface RepositoryInterface
 
     public function find($id): ?Model;
 
-    public function update(array $attributes, array $updateParam): bool;
+    public function update(array $attributes): bool;
 
     public function delete($id): ?bool;
 }

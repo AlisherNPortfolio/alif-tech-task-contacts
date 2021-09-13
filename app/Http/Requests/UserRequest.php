@@ -28,7 +28,7 @@ class UserRequest extends FormRequest
             'first_name' => 'required|max:15',
             'last_name' => 'required|max:15',
             'unique_name' => 'required|max:15|unique:users,unique_name',
-            'contacts.*.type' => [Rule::in(['phone', 'email']), 'required', 'string'],
+            'contacts.*.type' => [Rule::in(['PHONE', 'EMAIL']), 'required', 'string'],
             'contacts.*.contact' => 'string|max:20'
         ];
     }

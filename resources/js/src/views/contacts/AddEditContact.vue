@@ -181,7 +181,13 @@ export default {
         addContact(type) {
             if (!this[type].every(item => !!item.contact)) return;
 
-            this[type].push({type: type, contact: null});
+            const contact = {type: type, contact: null};
+
+            if (this.isEdit) {
+                contact['user_id'] = this.contactForm.id;
+            }
+
+            this[type].push(contact);
         },
         removeContact(type, item) {
             if (this[type].includes(item)) {
@@ -208,7 +214,7 @@ export default {
                     this.$notify({type: 'success', title: 'Contact added successfully!'});
                     this.backHome();
                 } else {
-                    this.$notify({type: 'error', title: res.message, text: `Code: ${res.code} <br/> Details: ${res.details}`})
+                    this.$notify({type: 'error', title: `Code: ${res.code}`, text: res.message})
                 }
 
             }, error => console.log(error))
@@ -221,7 +227,7 @@ export default {
                     this.$notify({type: 'success', title: 'Contact updated successfully!'});
                     this.backHome();
                 } else {
-                    this.$notify({type: 'error', title: res.message, text: `Code: ${res.code} <br/> Details: ${res.details}`})
+                    this.$notify({type: 'error', title: `Code: ${res.code}`, text: res.message})
                 }
 
             }, error => console.log(error))

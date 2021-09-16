@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\BaseContracts\UserRepositoryInterface;
 use Illuminate\Support\Collection;
-use PDOException;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
@@ -57,10 +56,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         $data = collect($data);
 
-        $user = $this->find($id);
-        if (!$user) {
-            abort(404, 'User not found!');
-        }
+        $user = $this->getUserById($id);
 
         $user->fill(
             $data->only(['first_name', 'last_name', 'unique_name'])
@@ -77,10 +73,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $this->deleteRemovedContacts($contacts, $user);
 
         foreach ($contacts as $contact) {
-
             if (isset($contact['id'])) {
                 $user->contacts()
-                    ->where('id', $contact['id'])
+                    ->whereId($contact['id'])
                     ->update(
                         collect($contact)
                             ->except('id')
@@ -92,10 +87,29 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         }
     }
 
+    private function getUserById($id)
+    {
+        $user = $this->find($id);
+        if (!$user) {
+            abort(404, 'User not found!');
+        }
+
+        return $user;
+    }
+
     private function deleteRemovedContacts(Collection $contacts, $user)
     {
-        $user->contacts()
-            ->whereNotIn('id', $contacts->pluck('id'))
-            ->delete();
+        $contactIds = $contacts->pluck('id');
+        $contactIds = $contactIds->filter(function ($value) {
+            return !is_null($value);
+        });
+
+        if (count($contactIds) > 0) {
+            $user->contacts()
+                ->whereNotIn('id', $contactIds)
+                ->delete();
+        } else {
+            $user->contacts()->delete();
+        }
     }
 }

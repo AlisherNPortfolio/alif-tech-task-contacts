@@ -1,20 +1,65 @@
 <template>
     <v-container>
         <v-row>
-            <v-col>
+            <v-col cols="12" md="4">
                 <router-link to="/contacts/create">
                     <v-btn
+                        class="mx-2"
+                        small
+                        color="secondary"
+                    >
+                        <v-icon dark>
+                            mdi-plus
+                        </v-icon>
+                        Add
+                    </v-btn>
+                </router-link>
+            </v-col>
+            <v-col cols="12" md="8">
+                <v-row>
+                    <v-col cols="12" md="3">
+                        <v-text-field
+                            v-model="query.first_name"
+                            label="First name"
+                            hide-details="auto"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="3">
+                        <v-text-field
+                            v-model="query.last_name"
+                            label="Last name"
+                            hide-details="auto"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="2">
+                        <v-text-field
+                            v-model="query.phone"
+                            label="Phone"
+                            hide-details="auto"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="2">
+                        <v-text-field
+                            v-model="query.email"
+                            label="Email"
+                            hide-details="auto"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="2">
+                        <v-btn
                         class="mx-2"
                         small
                         fab
                         dark
                         color="indigo"
+                        @click="load"
                     >
-                        <v-icon dark>
-                            mdi-plus
+                        <v-icon>
+                            mdi-magnify
                         </v-icon>
                     </v-btn>
-                </router-link>
+                    </v-col>
+                </v-row>
             </v-col>
         </v-row>
         <v-row>
@@ -99,6 +144,10 @@ export default {
     data() {
         return {
             query: {
+                first_name: null,
+                last_name: null,
+                phone: null,
+                email: null,
                 page: 1
             },
             headers: [

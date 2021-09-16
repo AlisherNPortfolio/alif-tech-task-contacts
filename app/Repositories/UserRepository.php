@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Models\User;
 use App\Repositories\Base\BaseRepository;
 use App\Repositories\BaseContracts\UserRepositoryInterface;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Collection;
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
@@ -23,7 +24,15 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function withPagination()
     {
         $request = request()->all();
-        return $this->model->with(['contacts'])->paginate(10, '*', 'page', $request['page']);
+        return app(Pipeline::class)
+            ->send($this->model::query()->with(['contacts']))
+            ->through([
+                \App\QueryPipeline\SearchFirstName::class,
+                \App\QueryPipeline\SearchLastName::class,
+                \App\QueryPipeline\SearchByContact::class
+            ])
+            ->thenReturn()
+            ->paginate(10, '*', 'page', $request['page']);
     }
 
     public function createUser(array $data)

@@ -20,7 +20,7 @@ class SearchByContact
             })
             ->when(request()->input('email'), function ($query) {
                 $query->whereHas('contacts', function ($q) {
-                    return $q->orWhere('contact', 'LIKE', '%' . request()->input('email') . '%');
+                    return $q->where('contact', 'LIKE', '%' . request()->input('email') . '%');
                 });
             });
     }
